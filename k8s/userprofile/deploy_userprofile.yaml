@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: usrprofiles_deploy
+  labels:
+    app: usrpro-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: usrprofiles
+  template:
+    metadata:
+      labels:
+        app: usrprofiles
+    spec:
+      containers:
+        - name: usrprofiles
+          image: 'registryqzm1711.azurecr.io/userprofile:latest'
+          ports:
+            - containerPort: 80
+          env:
+            - name: SQL_USER
+              value: sqladminqZm1711
+            - name: SQL_PASSWORD
+              value: oH2ho8Ro3
+            - name: SQL_SERVER
+              value: sqlserverqzm1711.database.windows.net
+            - name: SQL_DBNAME
+              value: mydrivingDB
+            - name: WEB_PORT
+              value: '80'
+            - name: WEB_SERVER_BASE_URI
+              value: 'http://0.0.0.0'
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Production
+            - name: CONFIG_FILES_PATH
+              value: /secrets
+          #envFrom:
+          #  - secretRef:
+          #    name: {{name of your secret in kubernetes}}
+          # not required, but recommended best practice
+          #livenessProbe:
+          #  httpGet:
+          #    path: "{{url path you want to check}}" # hint: there is a healthcheck endpoint - read the README!
+          #    port: 80
+          #  initialDelaySeconds: 10
+          #  periodSeconds: 30
+          #readinessProbe:
+          #  httpGet:
+          #    path: "{{url path you want to check}}"
+          #    port: 80
+          #  initialDelaySeconds: 5
+          #  periodSeconds: 5
+          # resource limits are also best practice - I'll let you figure that out on your own
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: poi
+  # namespace: my-app
+spec:
+  type: ClusterIP #LoadBalancer
+  selector:
+    app: poi
+  ports:
+    - protocol: TCP
+      name: poi-http
+      port: 80 # port you hit
+      targetPort: 80 # port inside

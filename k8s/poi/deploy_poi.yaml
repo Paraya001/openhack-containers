@@ -1,41 +1,70 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: poialk
+  name: poi
+  labels:
+    app: poi-deployment
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: poialk
+      app: poi
   template:
     metadata:
       labels:
-        app: poialk
+        app: poi
     spec:
-      nodeSelector:
-        'beta.kubernetes.io/os': linux
       containers:
-        - name: poialk
-          image: registryqzm1711.azurecr.io/poi:latest
+        - name: poi
+          image: 'registryqzm1711.azurecr.io/poi:latest'
+          ports:
+            - containerPort: 80
           env:
-            - name: ALLOW_EMPTY_PASSWORD
-              value: 'yes'
             - name: SQL_USER
-              value: 'sa'
+              value: sqladminqZm1711
             - name: SQL_PASSWORD
-              value: 'Password123!'
+              value: oH2ho8Ro3
             - name: SQL_SERVER
-              value: 'sql1'
+              value: sqlserverqzm1711.database.windows.net
             - name: SQL_DBNAME
-              value: 'mydrivingDB'
+              value: mydrivingDB
             - name: WEB_PORT
-              value: 80
+              value: '80'
             - name: WEB_SERVER_BASE_URI
               value: 'http://0.0.0.0'
             - name: ASPNETCORE_ENVIRONMENT
-              value: 'Production'
+              value: Production
             - name: CONFIG_FILES_PATH
-              value: '/secrets'
-          ports:
-            - containerPort: 6379
-              name: redis
+              value: /secrets
+          #envFrom:
+          #  - secretRef:
+          #    name: {{name of your secret in kubernetes}}
+          # not required, but recommended best practice
+          #livenessProbe:
+          #  httpGet:
+          #    path: "{{url path you want to check}}" # hint: there is a healthcheck endpoint - read the README!
+          #    port: 80
+          #  initialDelaySeconds: 10
+          #  periodSeconds: 30
+          #readinessProbe:
+          #  httpGet:
+          #    path: "{{url path you want to check}}"
+          #    port: 80
+          #  initialDelaySeconds: 5
+          #  periodSeconds: 5
+          # resource limits are also best practice - I'll let you figure that out on your own
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: poi
+  # namespace: my-app
+spec:
+  type: ClusterIP #LoadBalancer
+  selector:
+    app: poi
+  ports:
+    - protocol: TCP
+      name: poi-http
+      port: 80 # port you hit
+      targetPort: 80 # port inside

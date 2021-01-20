@@ -2,10 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tripviewer
-  labels:
-    app: tripviewer-deployment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: tripviewer
@@ -20,21 +18,18 @@ spec:
           ports:
             - containerPort: 80
           env:
-            - name: TRIPS_API_ENDPOINT
-              value: ''
             - name: USERPROFILE_API_ENDPOINT
-              value: ''
+              value: 'http://endpoint.you.specify(:port)'
+            - name: TRIPS_API_ENDPOINT
+              value: 'http://endpoint.you.specify(:port)'
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: poi
+  name: tripviewer
 spec:
-  type: ClusterIP #LoadBalancer
-  selector:
-    app: poi
+  type: LoadBalancer
   ports:
-    - protocol: TCP
-      name: poi-http
-      port: 80 # port you hit
-      targetPort: 80 # port inside
+    - port: 80
+  selector:
+    app: tripviewer

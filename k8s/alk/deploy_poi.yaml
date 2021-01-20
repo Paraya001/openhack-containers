@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poialk
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: poialk
+  template:
+    metadata:
+      labels:
+        app: poialk
+    spec:
+      nodeSelector:
+        'beta.kubernetes.io/os': linux
+      containers:
+        - name: poialk
+          image: registryqzm1711.azurecr.io/poi:latest
+          env:
+            - name: ALLOW_EMPTY_PASSWORD
+              value: 'yes'
+            - name: SQL_USER
+              value: 'sa'
+            - name: SQL_PASSWORD
+              value: 'Password123!'
+            - name: SQL_SERVER
+              value: 'sql1'
+            - name: SQL_DBNAME
+              value: 'mydrivingDB'
+            - name: WEB_PORT
+              value: 80
+            - name: WEB_SERVER_BASE_URI
+              value: 'http://0.0.0.0'
+            - name: ASPNETCORE_ENVIRONMENT
+              value: 'Production'
+            - name: CONFIG_FILES_PATH
+              value: '/secrets'
+          ports:
+            - containerPort: 6379
+              name: redis

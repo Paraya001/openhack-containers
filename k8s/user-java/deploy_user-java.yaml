@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-java-deployment
+  namespace: default
+  labels:
+    app: user-java-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-java
+  template:
+    metadata:
+      labels:
+        app: user-java
+    spec:
+      containers:
+        - name: user-java
+          image: 'registryqzm1711.azurecr.io/user-java:latest'
+          ports:
+            - containerPort: 80
+          env:
+            - name: SQL_USER
+              value: sqladminqZm1711
+            - name: SQL_PASSWORD
+              value: oH2ho8Ro3
+            - name: SQL_SERVER
+              value: sqlserverqzm1711.database.windows.net
+            - name: SQL_DBNAME
+              value: mydrivingDB
+            - name: PORT
+              value: '80'
+          #envFrom:
+          #  - secretRef:
+          #    name: {{name of your secret in kubernetes}}
+          # not required, but recommended best practice
+          livenessProbe:
+            httpGet:
+              path: '/api/user-java/healthcheck' # hint: there is a healthcheck endpoint - read the README!
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: '/api/user-java/healthcheck'
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          # resource limits are also best practice - I'll let you figure that out on your own
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-java
+  namespace: default
+spec:
+  type: ClusterIP #LoadBalancer
+  selector:
+    app: user-java
+  ports:
+    - protocol: TCP
+      name: user-java-http
+      port: 80 # port you hit
+      targetPort: 80 # port inside container

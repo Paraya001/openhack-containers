@@ -108,6 +108,8 @@
 
       1. Node VM Size
 
+         - `az vm list-sizes --location $LOCATION -o table`
+         - [Restricted VMS][102]
          - `NODE_VM_SIZE=Standard_B2s`
          - `echo $NODE_VM_SIZE`
 
@@ -162,3 +164,4 @@
 
 [100]: https://shell.azure.com
 [101]: https://docs.microsoft.com/en-us/cli/azure/ext/aks-preview/aks?view=azure-cli-latest
+[102]: https://docs.microsoft.com/en-us/azure/aks/quotas-skus-regions#restricted-vm-sizes

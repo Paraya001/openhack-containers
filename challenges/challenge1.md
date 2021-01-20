@@ -25,3 +25,9 @@
 1. Test the poi to sql connection:
 
    `curl -i -X GET 'http://localhost:80/api/poi`
+
+## Additional resources:
+
+- <https://docs.microsoft.com/en-us/sql/azure-data-studio/quickstart-sql-server?view=sql-server-ver15>
+- <https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-linux-2017&preserve-view=true&pivots=cs1-bash#pullandrun2017>
+- <https://www.c-sharpcorner.com/article/sql-server-2017-docker-container-and-web-api-in-net-core/>

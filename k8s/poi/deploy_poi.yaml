@@ -5,7 +5,7 @@ metadata:
   labels:
     app: poi-deployment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: poi
@@ -40,18 +40,18 @@ spec:
           #  - secretRef:
           #    name: {{name of your secret in kubernetes}}
           # not required, but recommended best practice
-          #livenessProbe:
-          #  httpGet:
-          #    path: "{{url path you want to check}}" # hint: there is a healthcheck endpoint - read the README!
-          #    port: 80
-          #  initialDelaySeconds: 10
-          #  periodSeconds: 30
-          #readinessProbe:
-          #  httpGet:
-          #    path: "{{url path you want to check}}"
-          #    port: 80
-          #  initialDelaySeconds: 5
-          #  periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: '/api/poi/healthcheck' # hint: there is a healthcheck endpoint - read the README!
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: '/api/poi/healthcheck'
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
           # resource limits are also best practice - I'll let you figure that out on your own
 ---
 apiVersion: v1

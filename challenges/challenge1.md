@@ -10,6 +10,10 @@
 
    `docker run --network openhacknet -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Password123!' -p 1433:1433 --name sql1 -h sql1 -itd mcr.microsoft.com/mssql/server:2017-latest`
 
+1. Access the local sql server and create a the required db
+
+   `CREATE DATABASE mydrivingDB;`
+
 1. Seed the sql db
 
    `docker run --network openhacknet -e 'SQLFQDN=sql1' -e 'SQLUSER=sa' -e 'SQLPASS=Password123!' -e 'SQLDB=mydrivingDB' openhack/data-load:v1`

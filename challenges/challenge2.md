@@ -140,5 +140,25 @@
       --tags $TAGS
       ```
 
+## Cleanup
+
+1. Delete the AKS
+
+   `az group delete -n $AKS_RG -y --no-wait`
+
+1. Delete the Log Analytics Workspace
+
+   `az group delete -n $LOG_ANALYTICS_WS_RG -y --no-wait`
+
+1. **If created**, delete the default Network Watcher
+
+   _If you don't have a network watcher enabled in the region that the virtual network you want to generate a topology for is in, network watchers are automatically created for you in all regions. The network watchers are created in a resource group named NetworkWatcherRG._
+
+   `az group delete -n NetworkWatcherRG -y --no-wait`
+
+1. uninstall the aks-preview
+
+   `az extension remove --name aks-preview`
+
 [100]: https://shell.azure.com
 [101]: https://docs.microsoft.com/en-us/cli/azure/ext/aks-preview/aks?view=azure-cli-latest

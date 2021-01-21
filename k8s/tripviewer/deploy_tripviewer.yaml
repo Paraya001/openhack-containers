@@ -4,7 +4,7 @@ metadata:
   name: tripviewer
   namespace: web-dev
   labels:
-    app: tripviewer-deployment
+    app: tripviewer
 spec:
   replicas: 1
   selector:
@@ -32,7 +32,7 @@ metadata:
   name: tripviewer
   namespace: web-dev
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: tripviewer
   ports:

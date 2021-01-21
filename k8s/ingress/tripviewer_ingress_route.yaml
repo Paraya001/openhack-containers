@@ -1,7 +1,8 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: hello-world-ingress
+  name: app-ingress
+  namespace: web-dev
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: 'false'
@@ -14,29 +15,4 @@ spec:
           - backend:
               serviceName: tripviewer
               servicePort: 80
-            path: /hello-world-one(/|$)(.*)
-          - backend:
-              serviceName: aks-helloworld-two
-              servicePort: 80
-            path: /hello-world-two(/|$)(.*)
-          - backend:
-              serviceName: tripviewer
-              servicePort: 80
             path: /(.*)
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: hello-world-ingress-static
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
-    nginx.ingress.kubernetes.io/rewrite-target: /static/$2
-spec:
-  rules:
-    - http:
-        paths:
-          - backend:
-              serviceName: tripviewer
-              servicePort: 80
-            path: /static(/|$)(.*)

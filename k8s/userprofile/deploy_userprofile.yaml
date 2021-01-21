@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: usrprofiles_deploy
+  name: usrprofiles
   labels:
     app: usrpro-deployment
 spec:

@@ -22,9 +22,15 @@ spec:
             - containerPort: 80
           env:
             - name: SQL_USER
-              value: sqladminqZm1711
+              valueFrom:
+                secretKeyRef:
+                  name: sqlusersecret
+                  key:  sqluser
             - name: SQL_PASSWORD
-              value: oH2ho8Ro3
+              valueFrom:
+                secretKeyRef:
+                  name: sqlpasswordsecret
+                  key: sqlpassword
             - name: SQL_SERVER
               value: sqlserverqzm1711.database.windows.net
             - name: SQL_DBNAME
@@ -41,18 +47,32 @@ spec:
           #  - secretRef:
           #    name: {{name of your secret in kubernetes}}
           # not required, but recommended best practice
-          #livenessProbe:
-          #  httpGet:
-          #    path: "{{url path you want to check}}" # hint: there is a healthcheck endpoint - read the README!
-          #    port: 80
-          #  initialDelaySeconds: 10
-          #  periodSeconds: 30
-          #readinessProbe:
-          #  httpGet:
-          #    path: "{{url path you want to check}}"
-          #    port: 80
-          #  initialDelaySeconds: 5
-          #  periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: "{{url path you want to check}}" # hint: there is a healthcheck endpoint - read the README!
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: "{{url path you want to check}}"
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: azure-kvname
+            nodePublishSecretRef:                       # Only required when using service principal mode
+              name: secrets-store-creds                 # Only required when using service principal mode  
+            
           # resource limits are also best practice - I'll let you figure that out on your own
 ---
 apiVersion: v1
